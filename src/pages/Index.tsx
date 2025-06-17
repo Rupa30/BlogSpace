@@ -2,11 +2,13 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import Navigation from '@/components/Navigation';
 import HeroIllustration from '@/components/HeroIllustration';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const { user } = useAuth();
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -94,23 +96,47 @@ const Index = () => {
               </p>
               
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4">
-                <Link to="/login">
-                  <Button 
-                    size="lg" 
-                    className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
-                  >
-                    Login to Read Blogs
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button 
-                    variant="outline" 
-                    size="lg"
-                    className="border-black text-black hover:bg-gray-50 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
-                  >
-                    Start Reading
-                  </Button>
-                </Link>
+                {user ? (
+                  <>
+                    <Link to="/dashboard">
+                      <Button 
+                        size="lg" 
+                        className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
+                      >
+                        Go to Dashboard
+                      </Button>
+                    </Link>
+                    <Link to="/blogs">
+                      <Button 
+                        variant="outline" 
+                        size="lg"
+                        className="border-black text-black hover:bg-gray-50 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
+                      >
+                        Read Blogs
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button 
+                        size="lg" 
+                        className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
+                      >
+                        Login to Read Blogs
+                      </Button>
+                    </Link>
+                    <Link to="/signup">
+                      <Button 
+                        variant="outline" 
+                        size="lg"
+                        className="border-black text-black hover:bg-gray-50 px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105"
+                      >
+                        Start Reading
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 

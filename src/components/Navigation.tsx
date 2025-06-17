@@ -2,9 +2,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm">
@@ -23,31 +25,33 @@ const Navigation = () => {
             >
               Blogs
             </Link>
-            <Link 
-              to="/writers" 
-              className="text-gray-600 hover:text-black transition-colors font-medium"
-            >
-              Writers
-            </Link>
-            <Link 
-              to="/about" 
-              className="text-gray-600 hover:text-black transition-colors font-medium"
-            >
-              About
-            </Link>
-            <div className="flex items-center space-x-4 ml-6">
+            {user && (
               <Link 
-                to="/login" 
+                to="/dashboard" 
                 className="text-gray-600 hover:text-black transition-colors font-medium"
               >
-                Login
+                Dashboard
               </Link>
-              <Link 
-                to="/signup" 
-                className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all duration-300 hover:scale-105 font-medium"
-              >
-                Sign Up
-              </Link>
+            )}
+            <div className="flex items-center space-x-4 ml-6">
+              {user ? (
+                <span className="text-gray-600">Welcome!</span>
+              ) : (
+                <>
+                  <Link 
+                    to="/login" 
+                    className="text-gray-600 hover:text-black transition-colors font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    to="/signup" 
+                    className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all duration-300 hover:scale-105 font-medium"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -71,35 +75,36 @@ const Navigation = () => {
               >
                 Blogs
               </Link>
-              <Link 
-                to="/writers" 
-                className="block px-3 py-2 text-gray-600 hover:text-black transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Writers
-              </Link>
-              <Link 
-                to="/about" 
-                className="block px-3 py-2 text-gray-600 hover:text-black transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-              <div className="border-t pt-2">
+              {user && (
                 <Link 
-                  to="/login" 
+                  to="/dashboard" 
                   className="block px-3 py-2 text-gray-600 hover:text-black transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Login
+                  Dashboard
                 </Link>
-                <Link 
-                  to="/signup" 
-                  className="block px-3 py-2 bg-black text-white rounded-lg mx-3 text-center hover:bg-gray-800 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+              )}
+              <div className="border-t pt-2">
+                {user ? (
+                  <span className="block px-3 py-2 text-gray-600">Welcome!</span>
+                ) : (
+                  <>
+                    <Link 
+                      to="/login" 
+                      className="block px-3 py-2 text-gray-600 hover:text-black transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link 
+                      to="/signup" 
+                      className="block px-3 py-2 bg-black text-white rounded-lg mx-3 text-center hover:bg-gray-800 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
