@@ -13,12 +13,16 @@ interface Blog {
   published_at: string;
   created_at: string;
   updated_at: string;
+  tags: string[] | null;
+  featured_image: string | null;
 }
 
 interface CreateBlogData {
   title: string;
   content: string;
   excerpt?: string;
+  tags?: string[];
+  featured_image?: string;
 }
 
 export function useBlogs() {
