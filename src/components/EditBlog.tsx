@@ -6,20 +6,38 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useCreateBlog } from '@/hooks/useBlogs';
-import { useUploadImage } from '@/hooks/useBlogOperations';
+import { useUpdateBlog, useUploadImage } from '@/hooks/useBlogOperations';
 import { useTags, useCreateTag } from '@/hooks/useTags';
 import { X, Upload, Plus } from 'lucide-react';
 
-export function CreateBlog() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [excerpt, setExcerpt] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [featuredImage, setFeaturedImage] = useState('');
+interface Blog {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string | null;
+  author_id: string;
+  author_name: string;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+  tags: string[] | null;
+  featured_image: string | null;
+}
+
+interface EditBlogProps {
+  blog: Blog;
+  onComplete: () => void;
+}
+
+export function EditBlog({ blog, onComplete }: EditBlogProps) {
+  const [title, setTitle] = useState(blog.title);
+  const [content, setContent] = useState(blog.content);
+  const [excerpt, setExcerpt] = useState(blog.excerpt || '');
+  const [selectedTags, setSelectedTags] = useState<string[]>(blog.tags || []);
+  const [featuredImage, setFeaturedImage] = useState(blog.featured_image || '');
   const [newTag, setNewTag] = useState('');
   
-  const createBlogMutation = useCreateBlog();
+  const updateBlogMutation = useUpdateBlog();
   const uploadImageMutation = useUploadImage();
   const createTagMutation = useCreateTag();
   const { data: availableTags } = useTags();
@@ -66,7 +84,8 @@ export function CreateBlog() {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
 
-    createBlogMutation.mutate({
+    updateBlogMutation.mutate({
+      id: blog.id,
       title: title.trim(),
       content: content.trim(),
       excerpt: excerpt.trim() || undefined,
@@ -76,19 +95,20 @@ export function CreateBlog() {
   };
 
   useEffect(() => {
-    if (createBlogMutation.isSuccess) {
-      setTitle('');
-      setContent('');
-      setExcerpt('');
-      setSelectedTags([]);
-      setFeaturedImage('');
+    if (updateBlogMutation.isSuccess) {
+      onComplete();
     }
-  }, [createBlogMutation.isSuccess]);
+  }, [updateBlogMutation.isSuccess, onComplete]);
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>Create New Blog Post</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Edit Blog Post</CardTitle>
+          <Button onClick={onComplete} variant="outline" size="sm">
+            Cancel
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -143,7 +163,7 @@ export function CreateBlog() {
                   id="image-upload"
                 />
                 <Label htmlFor="image-upload" className="cursor-pointer">
-                  <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                  <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                     <Upload className="h-4 w-4" />
                     Upload Image
                   </div>
@@ -189,7 +209,7 @@ export function CreateBlog() {
               
               {availableTags && availableTags.length > 0 && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Available tags:</p>
+                  <p className="text-sm text-gray-600 mb-2">Available tags:</p>
                   <div className="flex flex-wrap gap-2">
                     {availableTags
                       .filter(tag => !selectedTags.includes(tag.name))
@@ -197,7 +217,7 @@ export function CreateBlog() {
                         <Badge
                           key={tag.id}
                           variant="outline"
-                          className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                          className="cursor-pointer hover:bg-gray-100"
                           onClick={() => handleTagSelect(tag.name)}
                         >
                           {tag.name}
@@ -221,13 +241,18 @@ export function CreateBlog() {
             />
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={createBlogMutation.isPending}
-          >
-            {createBlogMutation.isPending ? 'Publishing...' : 'Publish Blog'}
-          </Button>
+          <div className="flex gap-4">
+            <Button 
+              type="submit" 
+              className="flex-1"
+              disabled={updateBlogMutation.isPending}
+            >
+              {updateBlogMutation.isPending ? 'Updating...' : 'Update Blog'}
+            </Button>
+            <Button type="button" onClick={onComplete} variant="outline">
+              Cancel
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
