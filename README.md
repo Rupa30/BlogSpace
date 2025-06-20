@@ -59,6 +59,9 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- GSAP
+- Framer Motion
+- Radix UI
 
 ## How can I deploy this project?
 
