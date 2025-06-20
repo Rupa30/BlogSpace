@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navigation from '@/components/Navigation';
 import HeroIllustration from '@/components/HeroIllustration';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
@@ -155,7 +156,7 @@ const Index = () => {
         <div className="absolute bottom-1/4 left-10 w-32 h-2 bg-black opacity-10"></div>
       </main>
 
-      {/* Footer Section */}
+      {/* Community Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">Join Our Community</h2>
@@ -178,6 +179,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };
