@@ -183,11 +183,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Floating Geometric Elements */}
-        <div className="absolute top-1/4 right-10 w-4 h-32 bg-gradient-to-b from-blue-500 to-transparent rounded-full opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-10 w-32 h-4 bg-gradient-to-r from-purple-500 to-transparent rounded-full opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/3 left-1/4 w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
-        <div className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '1.5s' }}></div>
       </main>
 
       {/* Enhanced Community Section */}
