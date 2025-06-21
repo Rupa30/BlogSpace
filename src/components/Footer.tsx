@@ -13,7 +13,7 @@ const Footer = () => {
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-500 to-purple-600 transform rotate-12 scale-150"></div>
       </div>
-      
+
       {/* Main Footer Content */}
       <div className="relative container mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -23,10 +23,10 @@ const Footer = () => {
               BlogSpace
             </Link>
             <p className="mt-6 text-gray-300 text-lg leading-relaxed max-w-md">
-              A modern platform for sharing your thoughts, stories, and ideas with the world. 
+              A modern platform for sharing your thoughts, stories, and ideas with the world.
               Create, share, and discover amazing content from writers everywhere.
             </p>
-            
+
             {/* Social Media Links */}
             <div className="flex space-x-6 mt-8">
               <a href="#" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 transform">
@@ -43,7 +43,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          
+
           {/* Quick Links */}
           <div>
             <h3 className="font-bold text-white mb-6 text-lg relative">
@@ -73,7 +73,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* Support & Company */}
           <div>
             <h3 className="font-bold text-white mb-6 text-lg relative">
@@ -104,16 +104,16 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
+
         {/* Newsletter Section */}
         <div className="mt-16 pt-12 border-t border-gray-800">
           <div className="text-center">
             <h3 className="text-2xl font-bold text-white mb-4">Stay Updated</h3>
             <p className="text-gray-300 mb-8">Get the latest stories and updates delivered to your inbox.</p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
+              <input
+                type="email"
+                placeholder="Enter your email"
                 className="flex-1 px-6 py-3 rounded-full bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
               />
               <button className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-full transition-all duration-300 hover:scale-105 transform shadow-lg hover:shadow-xl">
@@ -122,17 +122,19 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Section */}
-        <div className="mt-16 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 text-gray-400 mb-4 md:mb-0">
-            <span>© {new Date().getFullYear()} BlogSpace. Made with</span>
-            <Heart size={16} className="text-red-500 animate-pulse" />
-            <span>for writers everywhere.</span>
+        <div className="mt-16 pt-8 border-t border-gray-800 text-gray-400 flex flex-col md:flex-row justify-between items-center space-y-3 sm:space-y-0 space-x-2">
+          <div>
+            <span>© {new Date().getFullYear()} BlogSpace.</span>
           </div>
-          
+
+          <div>
+            <span className='flex items-center justify-center gap-2 '>Made with <Heart size={16} className="text-red-500 animate-pulse" /> for writers everywhere.</span>
+          </div>
+
           {/* Back to Top Button */}
-          <button 
+          <button
             onClick={scrollToTop}
             className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 transform group"
           >
@@ -141,10 +143,7 @@ const Footer = () => {
           </button>
         </div>
       </div>
-      
-      {/* Floating Elements */}
-      <div className="absolute top-10 right-10 w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-10 animate-pulse"></div>
-      <div className="absolute bottom-10 left-10 w-32 h-32 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full opacity-5 animate-pulse" style={{ animationDelay: '1s' }}></div>
+
     </footer>
   );
 };
