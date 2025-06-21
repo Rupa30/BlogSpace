@@ -28,13 +28,13 @@ const Blogs = () => {
               <div className="flex justify-center gap-4">
                 <a 
                   href="/login" 
-                  className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 hover:scale-105 font-medium"
+                  className="bg-black dark:bg-white text-white dark:text-black px-6 sm:px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 hover:scale-105 font-medium"
                 >
                   Login
                 </a>
                 <a 
                   href="/signup" 
-                  className="border border-black dark:border-white text-black dark:text-white px-8 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-300 hover:scale-105 font-medium"
+                  className="border border-black dark:border-white text-black dark:text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-300 hover:scale-105 font-medium"
                 >
                   Sign Up
                 </a>
