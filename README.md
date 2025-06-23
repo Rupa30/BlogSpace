@@ -39,7 +39,9 @@ cd blogspace
 ```
 
 2. **Install dependencies**
-```npm install```
+```bash
+npm install
+```
 
 3. **Setup Supabase**
 
@@ -53,11 +55,12 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 4. **Run the project**
-```npm run dev```
+```bash
+npm run dev
+```
 
 ---
 
-🌐 Live Demo
 👉 <a href="https://blogspacedotcom.vercel.app/" target="_blank">🌐 Live Demo</a>
 
 👉 <a href="https://github.com/Rupa30/BlogSpace" target="_blank">🔖 GitHub Repo</a>
