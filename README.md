@@ -25,8 +25,9 @@ A **modern, full-stack blogging platform** built with performance and design in 
 
 ## 📷 Screenshots
 
-> *[BlogSpace Homepage](./public/screenshots/HomepageSS.png)*
-> *[CreateBlog Page](./public/screenshots/Creteblogpage.png)*
+![Homepage](./public//screenshots/HomepageSS.png)
+![Create Blog Page](./public//screenshots/Createblogpage.png)
+
 
 ---
 
