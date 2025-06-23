@@ -26,11 +26,7 @@ A **modern, full-stack blogging platform** built with performance and design in 
 ## 📷 Screenshots
 
 ![Homepage](./public//screenshots/HomepageSS.png)
-![Create Blog Page](./public//screenshots/Createblogpage.png)
-
-
----
-
+![Create Blog Page](./public//screenshots/Creteblogpage.png)
 
 ---
 
@@ -42,10 +38,10 @@ git clone https://github.com/your-username/blogspace.git
 cd blogspace
 ```
 
-2. Install dependencies
+2. **Install dependencies**
 ```npm install```
 
-3. Setup Supabase
+3. **Setup Supabase**
 
 - Create a project on Supabase
 
@@ -56,12 +52,14 @@ cd blogspace
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
-4. Run the project
-
+4. **Run the project**
 ```npm run dev```
 
 ---
 
 🌐 Live Demo
-👉 [View Live Project](https://blogspacedotcom.vercel.app/)
-👉 [GitHub Repo](https://github.com/Rupa30/BlogSpace)
+👉 <a href="https://blogspacedotcom.vercel.app/" target="_blank">🌐 Live Demo</a>
+
+👉 <a href="https://github.com/Rupa30/BlogSpace" target="_blank">🔖 GitHub Repo</a>
+
+---
