@@ -9,17 +9,18 @@ export function BlogList() {
   const { user } = useAuth();
   const [view, setView] = useState<'my-posts' | 'explore'>('my-posts');
 
+  // Pass user?.id explicitly to enable query
   const {
     data: myBlogs,
     isLoading: loadingMy,
     error: errorMy,
-  } = useBlogs(user?.id); // 👈 fetch blogs by current user
+  } = useBlogs(user?.id, false); // fetch blogs by current user
 
   const {
     data: publicBlogs,
     isLoading: loadingPublic,
     error: errorPublic,
-  } = useBlogs(undefined, true); // 👈 fetch public blogs only
+  } = useBlogs(undefined, true); // fetch public blogs only
 
   const blogs = view === 'my-posts' ? myBlogs : publicBlogs;
   const isLoading = view === 'my-posts' ? loadingMy : loadingPublic;
@@ -88,7 +89,7 @@ export function BlogList() {
                     {blog.author_name?.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-sm text-gray-500">
-                  By {blog.author_name} • {formatDistanceToNow(new Date(blog.published_at))} ago
+                    By {blog.author_name} • {formatDistanceToNow(new Date(blog.published_at))} ago
                   </span>
                 </div>
               </CardHeader>

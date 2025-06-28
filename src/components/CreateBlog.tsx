@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -69,7 +68,7 @@ export function CreateBlog() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
-
+  
     createBlogMutation.mutate({
       title: title.trim(),
       content: content.trim(),
@@ -78,16 +77,7 @@ export function CreateBlog() {
       featured_image: featuredImage || undefined,
       is_public: isPublic,
     });
-
-    console.log("Submitting blog with:", {
-      title,
-      content,
-      excerpt,
-      tags: selectedTags,
-      is_public: isPublic,
-    });    
-
-  };
+  }
 
   useEffect(() => {
     if (createBlogMutation.isSuccess) {

@@ -29,7 +29,7 @@ interface CreateBlogData {
 // ✅ Hook to fetch either: all public blogs, or specific user's blogs
 export function useBlogs(userId?: string, onlyPublic = false) {
   return useQuery<Blog[]>({
-    queryKey: ['blogs', { userId, onlyPublic }],
+    queryKey: ['blogs', userId ?? null, onlyPublic],
     queryFn: async (): Promise<Blog[]> => {
       let query: ReturnType<typeof supabase.from> = supabase
         .from('blogs')
@@ -50,8 +50,6 @@ export function useBlogs(userId?: string, onlyPublic = false) {
   });
 }
 
-
-
 export function useCreateBlog() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -67,7 +65,7 @@ export function useCreateBlog() {
         .eq('id', user.id)
         .single();
 
-        const { data, error } = await supabase
+      const { data, error } = await supabase
         .from('blogs')
         .insert({
           ...blogData,
@@ -82,10 +80,9 @@ export function useCreateBlog() {
       return data;
     },
     onSuccess: (_, variables) => {
-      // Invalidate both queries to update both "my posts" and "public posts"
+      // Invalidate all blogs queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      queryClient.invalidateQueries({ queryKey: ['blogs', { userId: undefined, onlyPublic: true }] });
-
+      
       if (variables.is_public) {
         toast({
           title: "Published!",
@@ -101,7 +98,7 @@ export function useCreateBlog() {
     onError: (error) => {
       toast({
         title: "Error",
-        description: error.message,
+        description: (error as Error).message || "Failed to create blog post.",
         variant: "destructive",
       });
     },
