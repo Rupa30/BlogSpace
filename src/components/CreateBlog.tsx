@@ -10,7 +10,7 @@ import { useCreateBlog } from '@/hooks/useBlogs';
 import { useUploadImage } from '@/hooks/useBlogOperations';
 import { useTags, useCreateTag } from '@/hooks/useTags';
 import { X, Upload, Plus } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 
 export function CreateBlog() {
