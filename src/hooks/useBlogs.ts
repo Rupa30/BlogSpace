@@ -73,6 +73,7 @@ export function useCreateBlog() {
           author_id: user.id,
           author_name: profile?.full_name || 'Anonymous',
           published_at: new Date().toISOString(),
+          is_public: blogData.is_public ?? false,
         })
         .select()
         .single();
