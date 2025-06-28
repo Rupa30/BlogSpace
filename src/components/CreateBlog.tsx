@@ -10,6 +10,8 @@ import { useCreateBlog } from '@/hooks/useBlogs';
 import { useUploadImage } from '@/hooks/useBlogOperations';
 import { useTags, useCreateTag } from '@/hooks/useTags';
 import { X, Upload, Plus } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+
 
 export function CreateBlog() {
   const [title, setTitle] = useState('');
@@ -23,6 +25,7 @@ export function CreateBlog() {
   const uploadImageMutation = useUploadImage();
   const createTagMutation = useCreateTag();
   const { data: availableTags } = useTags();
+  const { user } = useAuth();
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +74,8 @@ export function CreateBlog() {
       content: content.trim(),
       excerpt: excerpt.trim() || undefined,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
-      featured_image: featuredImage || undefined
+      featured_image: featuredImage || undefined,
+      author_id: user?.id || '',
     });
   };
 

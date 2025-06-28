@@ -23,22 +23,47 @@ interface CreateBlogData {
   excerpt?: string;
   tags?: string[];
   featured_image?: string;
+  author_id?: string; // Optional, will be set from auth context
+  author_name?: string; // Optional, will be set from auth context
 }
 
-export function useBlogs() {
+// export function useBlogs() {
+//   return useQuery({
+//     queryKey: ['blogs'],
+//     queryFn: async () => {
+//       const { data, error } = await supabase
+//         .from('blogs')
+//         .select('*')
+//         .order('published_at', { ascending: false });
+
+//       if (error) throw error;
+//       return data as Blog[];
+//     }
+//   });
+// }
+
+export function useBlogs(userId?: string) {
   return useQuery({
-    queryKey: ['blogs'],
+    queryKey: ['blogs', userId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
 
+      if (userId) {
+        query.eq('author_id', userId); // ✅ filter by current user
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
-      return data as Blog[];
-    }
+      return data;
+    },
+    enabled: !!userId,
   });
 }
+
+
 
 export function useCreateBlog() {
   const queryClient = useQueryClient();
