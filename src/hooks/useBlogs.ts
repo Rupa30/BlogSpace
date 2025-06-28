@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import type { PostgrestSingleResponse } from '@supabase/supabase-js';
 
 interface Blog {
   id: string;
@@ -31,8 +30,8 @@ interface CreateBlogData {
 export function useBlogs(userId?: string, onlyPublic = false) {
   return useQuery<Blog[]>({
     queryKey: ['blogs', { userId, onlyPublic }],
-    queryFn: async () => {
-      let query = supabase
+    queryFn: async (): Promise<Blog[]> => {
+      let query: ReturnType<typeof supabase.from> = supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
@@ -43,13 +42,15 @@ export function useBlogs(userId?: string, onlyPublic = false) {
         query = query.eq('is_public', true);
       }
 
-      const { data, error }: PostgrestSingleResponse<Blog[]> = await query;
+      const { data, error } = await query;
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
     enabled: userId !== undefined || onlyPublic,
   });
 }
+
+
 
 export function useCreateBlog() {
   const queryClient = useQueryClient();
@@ -66,14 +67,13 @@ export function useCreateBlog() {
         .eq('id', user.id)
         .single();
 
-      const { data, error } = await supabase
+        const { data, error } = await supabase
         .from('blogs')
         .insert({
           ...blogData,
           author_id: user.id,
           author_name: profile?.full_name || 'Anonymous',
-          published_at: new Date().toISOString(),
-          is_public: blogData.is_public ?? false,
+          published_at: new Date().toISOString()
         })
         .select()
         .single();

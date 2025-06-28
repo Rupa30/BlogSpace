@@ -20,7 +20,8 @@ export function CreateBlog() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [featuredImage, setFeaturedImage] = useState('');
   const [newTag, setNewTag] = useState('');
-  
+  const [isPublic, setIsPublic] = useState(true);
+
   const createBlogMutation = useCreateBlog();
   const uploadImageMutation = useUploadImage();
   const createTagMutation = useCreateTag();
@@ -41,9 +42,9 @@ export function CreateBlog() {
 
   const handleAddTag = async () => {
     if (!newTag.trim()) return;
-    
+
     const tagName = newTag.trim().toLowerCase();
-    
+
     try {
       await createTagMutation.mutateAsync(tagName);
       if (!selectedTags.includes(tagName)) {
@@ -75,9 +76,17 @@ export function CreateBlog() {
       excerpt: excerpt.trim() || undefined,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
       featured_image: featuredImage || undefined,
-      is_public: true,
+      is_public: isPublic,
     });
-    
+
+    console.log("Submitting blog with:", {
+      title,
+      content,
+      excerpt,
+      tags: selectedTags,
+      is_public: isPublic,
+    });    
+
   };
 
   useEffect(() => {
@@ -119,13 +128,24 @@ export function CreateBlog() {
           </div>
 
           <div>
+            <Label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+              <span>Make Public</span>
+            </Label>
+          </div>
+
+          <div>
             <Label htmlFor="featured-image">Featured Image</Label>
             <div className="space-y-4">
               {featuredImage && (
                 <div className="relative">
-                  <img 
-                    src={featuredImage} 
-                    alt="Featured" 
+                  <img
+                    src={featuredImage}
+                    alt="Featured"
                     className="w-full h-48 object-cover rounded-lg"
                   />
                   <Button
@@ -179,7 +199,7 @@ export function CreateBlog() {
                   ))}
                 </div>
               )}
-              
+
               <div className="flex gap-2">
                 <Input
                   value={newTag}
@@ -191,7 +211,7 @@ export function CreateBlog() {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               {availableTags && availableTags.length > 0 && (
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Available tags:</p>
@@ -226,8 +246,8 @@ export function CreateBlog() {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full"
             disabled={createBlogMutation.isPending}
           >
