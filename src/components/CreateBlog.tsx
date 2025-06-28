@@ -75,7 +75,9 @@ export function CreateBlog() {
       excerpt: excerpt.trim() || undefined,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
       featured_image: featuredImage || undefined,
+      is_public: true,
     });
+    
   };
 
   useEffect(() => {

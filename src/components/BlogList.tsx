@@ -76,32 +76,36 @@ import { formatDistanceToNow } from 'date-fns';
 
 export function BlogList() {
   const { user } = useAuth();
-  const [showMyPosts, setShowMyPosts] = useState(true);
+  const [view, setView] = useState<'my-posts' | 'explore'>('my-posts');
 
   const {
     data: myBlogs,
-    isLoading: loadingMyBlogs,
-    error: errorMyBlogs
-  } = useBlogs(user?.id, true); // "My Posts"
+    isLoading: loadingMy,
+    error: errorMy,
+  } = useBlogs(user?.id); // 👈 fetch blogs by current user
 
   const {
-    data: allBlogs,
-    isLoading: loadingAllBlogs,
-    error: errorAllBlogs
-  } = useBlogs(undefined, false); // "All Posts"
+    data: publicBlogs,
+    isLoading: loadingPublic,
+    error: errorPublic,
+  } = useBlogs(undefined, true); // 👈 fetch public blogs only
 
-  const blogs = showMyPosts ? myBlogs : allBlogs;
-  const isLoading = showMyPosts ? loadingMyBlogs : loadingAllBlogs;
-  const error = showMyPosts ? errorMyBlogs : errorAllBlogs;
+  const blogs = view === 'my-posts' ? myBlogs : publicBlogs;
+  const isLoading = view === 'my-posts' ? loadingMy : loadingPublic;
+  const error = view === 'my-posts' ? errorMy : errorPublic;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">
-          {showMyPosts ? 'My Blog Posts' : 'All Blog Posts'}
+          {view === 'my-posts' ? 'My Blog Posts' : 'Explore Public Blogs'}
         </h2>
-        <Button onClick={() => setShowMyPosts((prev) => !prev)}>
-          {showMyPosts ? 'Show All Posts' : 'Show My Posts'}
+        <Button
+          onClick={() =>
+            setView((prev) => (prev === 'my-posts' ? 'explore' : 'my-posts'))
+          }
+        >
+          {view === 'my-posts' ? 'Explore Public Blogs' : 'Show My Posts'}
         </Button>
       </div>
 
@@ -131,10 +135,14 @@ export function BlogList() {
         </div>
       )}
 
-      {!isLoading && !error && (!blogs || blogs.length === 0) && (
+      {!isLoading && blogs?.length === 0 && (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-2">No blogs yet</h3>
-          <p className="text-gray-600">Be the first to create a blog post!</p>
+          <h3 className="text-xl font-semibold mb-2">No blogs found</h3>
+          <p className="text-gray-600">
+            {view === 'my-posts'
+              ? 'You haven’t posted anything yet.'
+              : 'No public blogs available.'}
+          </p>
         </div>
       )}
 
@@ -149,7 +157,8 @@ export function BlogList() {
                     {blog.author_name?.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-sm text-gray-500">
-                    By {blog.author_name} • {formatDistanceToNow(new Date(blog.published_at))} ago
+                    By {blog.author_name} •{' '}
+                    {formatDistanceToNow(new Date(blog.published_at))} ago
                   </span>
                 </div>
               </CardHeader>

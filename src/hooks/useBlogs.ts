@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import type { PostgrestSingleResponse } from '@supabase/supabase-js';
 
 interface Blog {
   id: string;
@@ -14,6 +15,7 @@ interface Blog {
   updated_at: string;
   tags: string[] | null;
   featured_image: string | null;
+  is_public: boolean;
 }
 
 interface CreateBlogData {
@@ -22,27 +24,30 @@ interface CreateBlogData {
   excerpt?: string;
   tags?: string[];
   featured_image?: string;
+  is_public?: boolean; // ✅ Public/private toggle
 }
 
-// ✅ Modified to allow filtering by current user or showing all
-export function useBlogs(userId?: string, userOnly: boolean = false) {
-  return useQuery({
-    queryKey: ['blogs', userOnly ? userId : 'all'],
+// ✅ Hook to fetch either: all public blogs, or specific user's blogs
+export function useBlogs(userId?: string, onlyPublic = false) {
+  return useQuery<Blog[]>({
+    queryKey: ['blogs', { userId, onlyPublic }],
     queryFn: async () => {
-      const query = supabase
+      let query = supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
 
-      if (userOnly && userId) {
-        query.eq('author_id', userId);
+      if (userId) {
+        query = query.eq('author_id', userId);
+      } else if (onlyPublic) {
+        query = query.eq('is_public', true);
       }
 
-      const { data, error } = await query;
+      const { data, error }: PostgrestSingleResponse<Blog[]> = await query;
       if (error) throw error;
-      return data as Blog[];
+      return data;
     },
-    enabled: userOnly ? !!userId : true, // ✅ run only if userId exists when userOnly = true
+    enabled: userId !== undefined || onlyPublic,
   });
 }
 
@@ -67,7 +72,7 @@ export function useCreateBlog() {
           ...blogData,
           author_id: user.id,
           author_name: profile?.full_name || 'Anonymous',
-          published_at: new Date().toISOString(), // ✅ ensures blog appears after creation
+          published_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -75,12 +80,22 @@ export function useCreateBlog() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Invalidate both queries to update both "my posts" and "public posts"
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      toast({
-        title: "Success!",
-        description: "Blog post created successfully.",
-      });
+      queryClient.invalidateQueries({ queryKey: ['blogs', { userId: undefined, onlyPublic: true }] });
+
+      if (variables.is_public) {
+        toast({
+          title: "Published!",
+          description: "Your public blog post is now live.",
+        });
+      } else {
+        toast({
+          title: "Saved!",
+          description: "Your private blog post was created.",
+        });
+      }
     },
     onError: (error) => {
       toast({
@@ -88,6 +103,6 @@ export function useCreateBlog() {
         description: error.message,
         variant: "destructive",
       });
-    }
+    },
   });
 }
