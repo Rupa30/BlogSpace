@@ -85,7 +85,8 @@ export function useCreateBlog() {
         .insert({
           ...blogData,
           author_id: user.id,
-          author_name: profile?.full_name || 'Anonymous'
+          author_name: profile?.full_name || 'Anonymous',
+          published_at: new Date().toISOString()
         })
         .select()
         .single();
