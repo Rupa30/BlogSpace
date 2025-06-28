@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -23,47 +22,29 @@ interface CreateBlogData {
   excerpt?: string;
   tags?: string[];
   featured_image?: string;
-  author_id?: string; // Optional, will be set from auth context
-  author_name?: string; // Optional, will be set from auth context
 }
 
-// export function useBlogs() {
-//   return useQuery({
-//     queryKey: ['blogs'],
-//     queryFn: async () => {
-//       const { data, error } = await supabase
-//         .from('blogs')
-//         .select('*')
-//         .order('published_at', { ascending: false });
-
-//       if (error) throw error;
-//       return data as Blog[];
-//     }
-//   });
-// }
-
-export function useBlogs(userId?: string) {
+// ✅ Modified to allow filtering by current user or showing all
+export function useBlogs(userId?: string, userOnly: boolean = false) {
   return useQuery({
-    queryKey: ['blogs', userId],
+    queryKey: ['blogs', userOnly ? userId : 'all'],
     queryFn: async () => {
       const query = supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
 
-      if (userId) {
-        query.eq('author_id', userId); // ✅ filter by current user
+      if (userOnly && userId) {
+        query.eq('author_id', userId);
       }
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      return data as Blog[];
     },
-    enabled: !!userId,
+    enabled: userOnly ? !!userId : true, // ✅ run only if userId exists when userOnly = true
   });
 }
-
-
 
 export function useCreateBlog() {
   const queryClient = useQueryClient();
@@ -86,7 +67,7 @@ export function useCreateBlog() {
           ...blogData,
           author_id: user.id,
           author_name: profile?.full_name || 'Anonymous',
-          published_at: new Date().toISOString()
+          published_at: new Date().toISOString(), // ✅ ensures blog appears after creation
         })
         .select()
         .single();
