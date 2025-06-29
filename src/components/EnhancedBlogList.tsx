@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useBlogs } from '@/hooks/useBlogs';
 import { useDeleteBlog } from '@/hooks/useBlogOperations';
@@ -26,42 +25,51 @@ interface Blog {
 interface EnhancedBlogListProps {
   showActions?: boolean;
   onEdit?: (blog: Blog) => void;
+  onlyMyBlogs?: boolean; // ✅ new prop
 }
 
-export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogListProps) {
+export function EnhancedBlogList({
+  showActions = false,
+  onEdit,
+  onlyMyBlogs = false,
+}: EnhancedBlogListProps) {
   const { data: blogs, isLoading, error } = useBlogs();
   const deleteBlogMutation = useDeleteBlog();
   const { user } = useAuth();
-  
+
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [itemsToShow, setItemsToShow] = useState(6);
 
-  const allTags = useMemo(() => {
+  // ✅ Filter based on onlyMyBlogs
+  const filteredSource = useMemo(() => {
     if (!blogs) return [];
+    if (onlyMyBlogs && user?.id) {
+      return blogs.filter(blog => blog.author_id === user.id);
+    }
+    return blogs;
+  }, [blogs, onlyMyBlogs, user]);
+
+  // ✅ All Tags for filtering
+  const allTags = useMemo(() => {
     const tagSet = new Set<string>();
-    blogs.forEach(blog => {
-      if (blog.tags) {
-        blog.tags.forEach(tag => tagSet.add(tag));
-      }
+    filteredSource.forEach(blog => {
+      blog.tags?.forEach(tag => tagSet.add(tag));
     });
     return Array.from(tagSet).sort();
-  }, [blogs]);
+  }, [filteredSource]);
 
+  // ✅ Final Filtered Blogs
   const filteredBlogs = useMemo(() => {
-    if (!blogs) return [];
-    
-    return blogs.filter(blog => {
+    return filteredSource.filter(blog => {
       const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           blog.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           blog.author_name.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesTag = !selectedTag || (blog.tags && blog.tags.includes(selectedTag));
-      
+                            blog.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            blog.author_name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTag = !selectedTag || blog.tags?.includes(selectedTag);
       return matchesSearch && matchesTag;
     });
-  }, [blogs, searchTerm, selectedTag]);
+  }, [filteredSource, searchTerm, selectedTag]);
 
   const displayedBlogs = filteredBlogs.slice(0, itemsToShow);
 
@@ -75,6 +83,7 @@ export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogLi
     setItemsToShow(prev => prev + 6);
   };
 
+  // Skeletons and error
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -104,11 +113,15 @@ export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogLi
     );
   }
 
-  if (!blogs || blogs.length === 0) {
+  if (!filteredSource || filteredSource.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">No blogs yet</h3>
-        <p className="text-gray-600 dark:text-gray-400">Be the first to create a blog post!</p>
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+          {onlyMyBlogs ? "You haven't created any blogs yet." : "No blogs yet"}
+        </h3>
+        <p className="text-gray-600 dark:text-gray-400">
+          {onlyMyBlogs ? "Start writing your first post!" : "Be the first to create a blog post!"}
+        </p>
       </div>
     );
   }
@@ -126,7 +139,7 @@ export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogLi
             className="pl-10"
           />
         </div>
-        
+
         {allTags.length > 0 && (
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-400" />
@@ -153,7 +166,7 @@ export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogLi
         )}
       </div>
 
-      {/* Blog Grid */}
+      {/* Blog Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {displayedBlogs.map((blog) => (
           <BlogCard
@@ -176,7 +189,7 @@ export function EnhancedBlogList({ showActions = false, onEdit }: EnhancedBlogLi
         </div>
       )}
 
-      {/* Blog Reader Modal */}
+      {/* Blog Modal */}
       <BlogReader 
         blog={selectedBlog}
         open={!!selectedBlog}

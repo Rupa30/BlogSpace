@@ -1,74 +1,97 @@
-import { useBlogs } from '@/hooks/useBlogs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from "@/contexts/AuthContext";
+import { useBlogs } from "@/hooks/useBlogs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { formatDistanceToNow } from "date-fns";
 
 export function BlogList() {
-  const { data: blogs, isLoading, error } = useBlogs();
+  const { user } = useAuth();
+
+  const { data: allBlogs = [], isLoading: loadingAll } = useBlogs(); // all blogs
+  const { data: myBlogs = [], isLoading: loadingMy } = useBlogs(user?.id); // user's blogs
 
   return (
-    <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">All Blog Posts</h2>
-      </div>
+    <Tabs defaultValue="all" className="w-full">
+      {/* Tab buttons */}
+      <TabsList className="mb-6">
+        <TabsTrigger value="all">All Blogs</TabsTrigger>
+        <TabsTrigger value="my">My Blogs</TabsTrigger>
+      </TabsList>
 
-      {isLoading && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader>
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="h-3 bg-gray-200 rounded"></div>
-                  <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-3 bg-gray-200 rounded w-4/6"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+      {/* All Blogs tab */}
+      <TabsContent value="all">
+        {loadingAll ? (
+          <p>Loading blogs...</p>
+        ) : allBlogs.length === 0 ? (
+          <p className="text-center text-gray-500">No blogs found.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {allBlogs.map((blog) => (
+              <Card key={blog.id}>
+                <CardHeader>
+                  <CardTitle className="line-clamp-2">{blog.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    By {blog.author_name} •{" "}
+                    {formatDistanceToNow(new Date(blog.published_at))} ago
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 line-clamp-3">
+                    {blog.excerpt || blog.content.slice(0, 150) + "..."}
+                  </p>
+                  {user?.id === blog.author_id && (
+                    <div className="mt-3 flex gap-2">
+                      <Button size="sm" variant="outline">
+                        Edit
+                      </Button>
+                      <Button size="sm" variant="destructive">
+                        Delete
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </TabsContent>
 
-      {error && (
-        <div className="text-center py-12">
-          <p className="text-red-500">Error loading blogs. Please try again.</p>
-        </div>
-      )}
-
-      {!isLoading && blogs?.length === 0 && (
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-2">No blogs yet</h3>
-          <p className="text-gray-600">Be the first to create a blog post!</p>
-        </div>
-      )}
-
-      {!isLoading && blogs && blogs.length > 0 && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {blogs.map((blog) => (
-            <Card key={blog.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="line-clamp-2">{blog.title}</CardTitle>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 text-white font-medium text-sm">
-                    {blog.author_name?.charAt(0).toUpperCase()}
+      {/* My Blogs tab */}
+      <TabsContent value="my">
+        {loadingMy ? (
+          <p>Loading your blogs...</p>
+        ) : myBlogs.length === 0 ? (
+          <p className="text-center text-gray-500">You haven’t created any blogs yet.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {myBlogs.map((blog) => (
+              <Card key={blog.id}>
+                <CardHeader>
+                  <CardTitle className="line-clamp-2">{blog.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    By {blog.author_name} •{" "}
+                    {formatDistanceToNow(new Date(blog.published_at))} ago
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 line-clamp-3">
+                    {blog.excerpt || blog.content.slice(0, 150) + "..."}
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <Button size="sm" variant="outline">
+                      Edit
+                    </Button>
+                    <Button size="sm" variant="destructive">
+                      Delete
+                    </Button>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    By {blog.author_name} • {formatDistanceToNow(new Date(blog.published_at))} ago
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 line-clamp-3">
-                  {blog.excerpt || blog.content.substring(0, 150) + '...'}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </TabsContent>
+    </Tabs>
   );
 }
-// 

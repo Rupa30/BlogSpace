@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navigation from '@/components/Navigation';
@@ -44,7 +43,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Navigation />
-      
+
       <div className="container mx-auto px-6 lg:px-8 pt-32">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -53,8 +52,8 @@ const Dashboard = () => {
               Create and manage your blog posts
             </p>
           </div>
-          
-          <Button 
+
+          <Button
             onClick={handleSignOut}
             variant="outline"
             className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -64,26 +63,41 @@ const Dashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-xl">
             <TabsTrigger value="blogs">All Blogs</TabsTrigger>
+            <TabsTrigger value="my-blogs">My Blogs</TabsTrigger>
             <TabsTrigger value="create">Create Blog</TabsTrigger>
             {editingBlog && <TabsTrigger value="edit">Edit Blog</TabsTrigger>}
           </TabsList>
-          
+
+          {/* All Blogs */}
           <TabsContent value="blogs" className="mt-8">
-            <EnhancedBlogList 
-              showActions={true}
+            <EnhancedBlogList
+              showActions={false}  // ❌ No Edit/Delete for All Blogs
               onEdit={handleEditBlog}
+              onlyMyBlogs={false}
             />
           </TabsContent>
-          
+
+
+          {/* My Blogs */}
+          <TabsContent value="my-blogs" className="mt-8">
+            <EnhancedBlogList
+              showActions={true}
+              onEdit={handleEditBlog}
+              onlyMyBlogs={true}
+            />
+          </TabsContent>
+
+          {/* Create Blog */}
           <TabsContent value="create" className="mt-8">
             <CreateBlog />
           </TabsContent>
-          
+
+          {/* Edit Blog */}
           {editingBlog && (
             <TabsContent value="edit" className="mt-8">
-              <EditBlog 
+              <EditBlog
                 blog={editingBlog}
                 onComplete={handleEditComplete}
               />

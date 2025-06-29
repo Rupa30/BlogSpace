@@ -23,21 +23,25 @@ interface CreateBlogData {
   excerpt?: string;
   tags?: string[];
   featured_image?: string;
-  is_public?: boolean; // ✅ Public/private toggle
+  is_public?: boolean; 
 }
 
-// ✅ Hook to fetch either: all public blogs, or specific user's blogs
-export function useBlogs() {
-  return useQuery<Blog[]>({
-    queryKey: ['blogs'],
-    queryFn: async (): Promise<Blog[]> => {
-      const { data, error } = await supabase
+export function useBlogs(userId?: string) {
+  return useQuery({
+    queryKey: ['blogs', userId],
+    queryFn: async () => {
+      const query = supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
 
+      if (userId) {
+        query.eq('author_id', userId);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
-      return data ?? [];
+      return data;
     },
   });
 }
@@ -73,7 +77,7 @@ export function useCreateBlog() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] }); // <-- This is the fix
+      queryClient.invalidateQueries({ queryKey: ['blogs'] }); 
 
       if (variables.is_public) {
         toast({
