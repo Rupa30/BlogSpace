@@ -111,7 +111,7 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
           onClick={() => onView(blog)}
           variant="outline" 
           size="sm"
-          className="w-full group font-medium"
+          className="w-full group font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors"
         >
           <Eye className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
           Read More
