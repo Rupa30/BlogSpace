@@ -71,6 +71,10 @@ const Footer = () => {
                   Sign Up
                 </Link>
               </li>
+              <li>
+                <Link to="/about" className="text-gray-300 hover:text-white transition-all duration-300 hover:translate-x-2 transform inline-block">About the Creator</Link>
+              </li>
+
             </ul>
           </div>
 

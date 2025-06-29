@@ -129,7 +129,7 @@ const Index = () => {
                         size="lg"
                         className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                       >
-                        Go to Dashboard
+                        Start Writing
                         <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
@@ -151,7 +151,7 @@ const Index = () => {
                         size="lg"
                         className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                       >
-                        Login to Read Blogs
+                        Become a Writer
                         <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>

@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import Blogs from "./pages/Blogs";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import AboutTheCreator from "./pages/AboutCreator";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/blogs" element={<Blogs />} />
+              <Route path="/about" element={<AboutTheCreator />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
