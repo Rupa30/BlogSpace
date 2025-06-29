@@ -27,28 +27,21 @@ interface CreateBlogData {
 }
 
 // ✅ Hook to fetch either: all public blogs, or specific user's blogs
-export function useBlogs(userId?: string, onlyPublic = false) {
+export function useBlogs() {
   return useQuery<Blog[]>({
-    queryKey: ['blogs', userId ?? null, onlyPublic],
+    queryKey: ['blogs'],
     queryFn: async (): Promise<Blog[]> => {
-      let query: ReturnType<typeof supabase.from> = supabase
+      const { data, error } = await supabase
         .from('blogs')
         .select('*')
         .order('published_at', { ascending: false });
 
-      if (userId) {
-        query = query.eq('author_id', userId);
-      } else if (onlyPublic) {
-        query = query.eq('is_public', true);
-      }
-
-      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },
-    enabled: userId !== undefined || onlyPublic,
   });
 }
+
 
 export function useCreateBlog() {
   const queryClient = useQueryClient();
@@ -80,9 +73,8 @@ export function useCreateBlog() {
       return data;
     },
     onSuccess: (_, variables) => {
-      // Invalidate all blogs queries to refetch updated data
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      
+      queryClient.invalidateQueries({ queryKey: ['blogs'] }); // <-- This is the fix
+
       if (variables.is_public) {
         toast({
           title: "Published!",

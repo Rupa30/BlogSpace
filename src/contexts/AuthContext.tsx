@@ -6,8 +6,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -21,14 +21,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ✅ Handle session redirect from email confirmation link
   useEffect(() => {
     const handleRedirect = async () => {
-      const { data, error } = await supabase.auth.getSessionFromUrl();
-      if (error) {
-        console.error('Error handling email confirmation redirect:', error.message);
-      } else {
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
-        // ✅ Clean the URL after handling token
-        window.history.replaceState({}, document.title, window.location.pathname);
+      const hash = window.location.hash;
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error('Error handling email confirmation redirect:', error.message);
+        } else {
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+          // ✅ Clean the URL after handling token
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
     };
 

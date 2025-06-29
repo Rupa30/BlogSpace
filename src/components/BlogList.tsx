@@ -1,44 +1,14 @@
-import { useState } from 'react';
 import { useBlogs } from '@/hooks/useBlogs';
-import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 
 export function BlogList() {
-  const { user } = useAuth();
-  const [view, setView] = useState<'my-posts' | 'explore'>('my-posts');
-
-  // Pass user?.id explicitly to enable query
-  const {
-    data: myBlogs,
-    isLoading: loadingMy,
-    error: errorMy,
-  } = useBlogs(user?.id, false); // fetch blogs by current user
-
-  const {
-    data: publicBlogs,
-    isLoading: loadingPublic,
-    error: errorPublic,
-  } = useBlogs(undefined, true); // fetch public blogs only
-
-  const blogs = view === 'my-posts' ? myBlogs : publicBlogs;
-  const isLoading = view === 'my-posts' ? loadingMy : loadingPublic;
-  const error = view === 'my-posts' ? errorMy : errorPublic;
+  const { data: blogs, isLoading, error } = useBlogs();
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">
-          {view === 'my-posts' ? 'My Blog Posts' : 'Explore Public Blogs'}
-        </h2>
-        <Button
-          onClick={() =>
-            setView((prev) => (prev === 'my-posts' ? 'explore' : 'my-posts'))
-          }
-        >
-          {view === 'my-posts' ? 'Explore Public Blogs' : 'Show My Posts'}
-        </Button>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">All Blog Posts</h2>
       </div>
 
       {isLoading && (
@@ -69,12 +39,8 @@ export function BlogList() {
 
       {!isLoading && blogs?.length === 0 && (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-2">No blogs found</h3>
-          <p className="text-gray-600">
-            {view === 'my-posts'
-              ? 'You haven’t posted anything yet.'
-              : 'No public blogs available.'}
-          </p>
+          <h3 className="text-xl font-semibold mb-2">No blogs yet</h3>
+          <p className="text-gray-600">Be the first to create a blog post!</p>
         </div>
       )}
 
@@ -105,3 +71,4 @@ export function BlogList() {
     </div>
   );
 }
+// 
