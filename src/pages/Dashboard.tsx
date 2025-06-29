@@ -63,12 +63,27 @@ const Dashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-xl">
+
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 max-w-md">
             <TabsTrigger value="blogs">All Blogs</TabsTrigger>
             <TabsTrigger value="my-blogs">My Blogs</TabsTrigger>
-            <TabsTrigger value="create">Create Blog</TabsTrigger>
             {editingBlog && <TabsTrigger value="edit">Edit Blog</TabsTrigger>}
           </TabsList>
+
+
+          <Button
+            onClick={() => setActiveTab('create')}
+            className="fixed bottom-6 right-6 shadow-lg rounded-full px-6 py-3 text-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-50"
+          >
+            + Blog
+          </Button>
+
+          {/* Create Blog */}
+          {activeTab === 'create' && (
+            <div className="mt-8">
+              <CreateBlog onCancel={() => setActiveTab('my-blogs')} />
+            </div>
+          )}
 
           {/* All Blogs */}
           <TabsContent value="blogs" className="mt-8">
@@ -90,9 +105,9 @@ const Dashboard = () => {
           </TabsContent>
 
           {/* Create Blog */}
-          <TabsContent value="create" className="mt-8">
+          {/* <TabsContent value="create" className="mt-8">
             <CreateBlog />
-          </TabsContent>
+          </TabsContent> */}
 
           {/* Edit Blog */}
           {editingBlog && (

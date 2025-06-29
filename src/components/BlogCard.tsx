@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,9 +30,9 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
   const isOwner = user?.id === blog.author_id;
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden">
       {blog.featured_image && (
-        <div className="aspect-video overflow-hidden rounded-t-lg">
+        <div className="aspect-video overflow-hidden">
           <img 
             src={blog.featured_image} 
             alt={blog.title}
@@ -44,7 +43,7 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
       
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start gap-2">
-          <CardTitle className="line-clamp-2 text-lg font-bold text-gray-900 dark:text-gray-100">
+          <CardTitle className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
             {blog.title}
           </CardTitle>
           {showActions && isOwner && (
@@ -79,19 +78,23 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
           )}
         </div>
         
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          By {blog.author_name} • {formatDistanceToNow(new Date(blog.published_at))} ago
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          By {blog.author_name || 'Anonymous'} • {formatDistanceToNow(new Date(blog.published_at))} ago
         </div>
         
         {blog.tags && blog.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="flex flex-wrap gap-2 mt-3">
             {blog.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="text-xs rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1"
+              >
                 {tag}
               </Badge>
             ))}
             {blog.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-xs rounded-full px-3 py-1">
                 +{blog.tags.length - 3} more
               </Badge>
             )}
@@ -99,8 +102,8 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
         )}
       </CardHeader>
       
-      <CardContent className="pt-0">
-        <p className="text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+      <CardContent className="pt-0 space-y-4">
+        <p className="text-gray-700 dark:text-gray-300 line-clamp-3">
           {blog.excerpt || blog.content.substring(0, 150) + '...'}
         </p>
         
@@ -108,7 +111,7 @@ export function BlogCard({ blog, onView, onEdit, onDelete, showActions = false }
           onClick={() => onView(blog)}
           variant="outline" 
           size="sm"
-          className="w-full group"
+          className="w-full group font-medium"
         >
           <Eye className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
           Read More

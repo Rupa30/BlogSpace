@@ -11,8 +11,11 @@ import { useTags, useCreateTag } from '@/hooks/useTags';
 import { X, Upload, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
+interface CreateBlogProps {
+  onCancel?: () => void;
+}
 
-export function CreateBlog() {
+export function CreateBlog({ onCancel }: CreateBlogProps){
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
@@ -68,7 +71,7 @@ export function CreateBlog() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
-  
+
     createBlogMutation.mutate({
       title: title.trim(),
       content: content.trim(),
@@ -91,9 +94,15 @@ export function CreateBlog() {
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
+      <CardHeader className="flex flex-row justify-between items-center">
         <CardTitle>Create New Blog Post</CardTitle>
+        {onCancel && (
+          <Button className='border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-800' variant="ghost" size="sm" onClick={onCancel}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
+
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -248,3 +257,5 @@ export function CreateBlog() {
     </Card>
   );
 }
+
+
