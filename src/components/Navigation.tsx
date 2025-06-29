@@ -8,6 +8,8 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
+  const userInitial = user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || '';
+
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900 backdrop-blur-sm border-b border-gray-200/20 dark:border-gray-700/20">
@@ -20,15 +22,15 @@ const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/blogs" 
+            <Link
+              to="/blogs"
               className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
             >
               Blogs
             </Link>
             {user && (
-              <Link 
-                to="/dashboard" 
+              <Link
+                to="/dashboard"
                 className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
               >
                 Dashboard
@@ -37,17 +39,22 @@ const Navigation = () => {
             <div className="flex items-center space-x-4 ml-6">
               <ThemeToggle />
               {user ? (
-                <span className="text-gray-600 dark:text-gray-300">Welcome!</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium hidden sm:inline">Welcome!</span>
+                  <div className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 flex items-center justify-center font-semibold">
+                    {userInitial}
+                  </div>
+                </div>
               ) : (
                 <>
-                  <Link 
-                    to="/login" 
+                  <Link
+                    to="/login"
                     className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
                   >
                     Login
                   </Link>
-                  <Link 
-                    to="/signup" 
+                  <Link
+                    to="/signup"
                     className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 hover:scale-105 font-medium"
                   >
                     Sign Up
@@ -73,16 +80,16 @@ const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link 
-                to="/blogs" 
+              <Link
+                to="/blogs"
                 className="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Blogs
               </Link>
               {user && (
-                <Link 
-                  to="/dashboard" 
+                <Link
+                  to="/dashboard"
                   className="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -91,18 +98,23 @@ const Navigation = () => {
               )}
               <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
                 {user ? (
-                  <span className="block px-3 py-2 text-gray-600 dark:text-gray-300">Welcome!</span>
+                  <div className="flex items-center gap-2 px-3 py-2">
+                    <span className="text-gray-600 dark:text-gray-300 font-medium">Welcome!</span>
+                    <div className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 flex items-center justify-center font-semibold">
+                      {userInitial}
+                    </div>
+                  </div>
                 ) : (
                   <>
-                    <Link 
-                      to="/login" 
+                    <Link
+                      to="/login"
                       className="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Login
                     </Link>
-                    <Link 
-                      to="/signup" 
+                    <Link
+                      to="/signup"
                       className="block px-3 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg mx-3 text-center hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
